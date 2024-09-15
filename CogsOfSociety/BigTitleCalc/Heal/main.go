@@ -30,24 +30,47 @@ func execHealMagic(potency int, healPowerValue int, fweaponD float64, criticalRa
 	skillRate := float64(potency)
 	healPower := float64(healPowerValue)
 	fealDet := 30.0
-	fealWd := fweaponD
-	criticalRate := criticalRateValue
 	indomitable := 200.0
 	trait := 320.0
 	buff1 := 100.2
 	buff2 := 200.56
-	healFirst := (skillRate * healPower * fealDet) / 100.0 / 1000.0
+	healFirst := CalcHealFirst(skillRate, healPower, fealDet)
 	println(fmt.Sprintf("healfirst %f", healFirst))
 
-	healSecond := (((((healFirst * indomitable) / 1000.0) * float64(fealWd)) / 100.0) * trait) / 100.0
+	healSecond := calcHealSecond(healFirst, indomitable, fweaponD, trait)
 	println(fmt.Sprintf("healSecond %f", healSecond))
 
-	healThird := (healSecond * criticalRate) / 1000.00
+	healThird := calcHealThird(healFirst, criticalRateValue)
 	println(fmt.Sprintf("healThird %f", healThird))
 
-	randomRange := float64(rand.Intn(6) + 97)
+	randomRange := calcAppRandomRange()
 
-	healResult := ((healThird * randomRange) / 100.0) * buff1 * buff2
+	healResult := calcRandomResult(healThird, randomRange, buff1, buff2)
 	println(fmt.Sprintf("healResult %f", healResult))
 
+}
+
+// 計算式の移植用(calc refectring func main move to calc first )
+func CalcHealFirst(skillRate float64, healPower float64, fealDet float64) float64 {
+	return (skillRate * healPower * fealDet) / 100.0 / 1000.0
+}
+
+// 計算式の移植用(calc refectring func main move to calc second )
+func calcHealSecond(healFirst float64, indomitable float64, fealWd float64, trait float64) float64 {
+	return (((((healFirst * indomitable) / 1000.0) * fealWd) / 100.0) * trait) / 100.0
+}
+
+// 計算式の移植用(calc refectring func main move to calc third )
+func calcHealThird(healFirst float64, criticalRate float64) float64 {
+	return (healFirst * criticalRate) / 1000.00
+}
+
+// 計算式の移植用(calc refectring func main move to calc random range )
+func calcAppRandomRange() float64 {
+	return float64(rand.Intn(6) + 97)
+}
+
+// 計算式の移植用(calc refectring func main move to calc random result )
+func calcRandomResult(healThird float64, randomRange float64, buff1 float64, buff2 float64) float64 {
+	return ((healThird * randomRange) / 100.0) * buff1 * buff2
 }
